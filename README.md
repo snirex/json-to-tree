@@ -1,14 +1,13 @@
 # json-to-tree
 Convert single level json list that includes a 'parent' property, to a tree (in javascript)
 
-
 1. Get json from url <http://www.mocky.io/v2/5c3c7ad13100007400a1a401>
 1. transfer the json request into tree format
 1. generate html tree using ul/ui like the example
 
 ![alt text](https://raw.githubusercontent.com/snirex/json-to-tree/main/example.png)
 
-1. style using the following css
+1. style using the following css:
 
 ```css
 \* Remove default bullets *\
