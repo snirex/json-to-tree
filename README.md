@@ -6,7 +6,7 @@ Convert single level json list that includes a 'parent' property, to a tree (in 
 1. transfer the json request into tree format
 1. generate html tree using ul/ui like the example
 
-![](Aspose.Words.8e417828-8fa7-4243-afbb-3438d4c68358.001.png)
+![alt text](https://raw.githubusercontent.com/snirex/json-to-tree/main/example.png)
 
 1. style using the following css
 
