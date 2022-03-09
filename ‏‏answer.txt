@@ -1,0 +1,153 @@
+<html>
+<head>
+    <!-- 4.	style using the following css -->
+    <style>
+        /* Remove default bullets */
+        ul, #myUL {
+            list-style-type: none;
+        }
+
+        /* Remove margins and padding from the parent ul */
+        #myUL {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Style the caret/arrow */
+        .caret {
+            cursor: pointer;
+            user-select: none; /* Prevent text selection */
+        }
+
+            /* Create the caret/arrow with a unicode, and style it */
+            .caret::before {
+                content: "\25B6";
+                color: black;
+                display: inline-block;
+                margin-right: 6px;
+            }
+
+        /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+        .caret-down::before {
+            transform: rotate(90deg);
+        }
+
+        /* Hide the nested list */
+        .nested {
+            display: none;
+        }
+
+        /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+        .active {
+            display: block;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script>
+
+        //5. Write a function that can access with o(1) to each node in the tree by given ID
+        let nodes_arr = [];
+        function pushToSearchArray(id, node) {
+            if (nodes_arr.length < id) {
+                while (nodes_arr.length < id)
+                    nodes_arr.push([,]);
+            } else if (nodes_arr[id]) {
+                nodes_arr[id] = node;
+            }
+            nodes_arr.push([id, node]);
+        }
+        //5. Write a function that can access with o(1) to each node in the tree by given ID
+        function search(id) { return nodes_arr[id]; }
+
+
+        function getJson(url) {
+			let tree_json = [];		
+            let getjsn = $.getJSON(url, function (data) {
+                tree_json = list_to_tree(data)
+            }).done(function (data) {
+                let ul = makeUL(tree_json);
+                $('#myUL').html(ul);
+
+                //events
+                $('.caret').click(caretdown);
+                $('.nested').click(nest);
+            });
+        }
+
+        //2. transfer the json request into tree format
+        function list_to_tree(list) {
+            let map = {}, node, roots = [];
+
+            for (var i = 0; i < list.nodes.length; i++) {
+                map[list.nodes[i].id] = i; // initialize the map
+                list.nodes[i].children = []; // initialize the children
+            }
+
+            for (var i = 0; i < list.nodes.length; i++) {
+                node = list.nodes[i];
+
+                if (node.parent !== 0) {
+                    // if you have dangling branches check that map[node.parentId] exists
+                    list.nodes[map[node.parent]].children.push(node);
+                    pushToSearchArray(list.nodes[i].id, node);
+                } else {
+                    roots.push(node);
+                    pushToSearchArray(list.nodes[i].id, node);
+                }
+            }
+            return roots;
+        }
+
+        //3. generate html tree using ul/ui like the example
+        function makeUL(lst) {
+            let html = [];
+            html.push('<ul class="caret">');
+            $(lst).each(function () {
+                html.push(makeLI(this))
+            });
+            html.push('</ul>');
+            return html.join("\n");
+        }
+
+        //3. generate html tree using ul/ui like the example
+        function makeLI(elem) {
+            let html = [];
+            if (elem.parent == 0)
+                html.push('<li>');
+            else
+                html.push('<li class="nested" s_id="' + elem.id + '">');
+            html.push(elem.text);
+            if (elem.children.length > 0)
+                html.push(makeUL(elem.children));
+            html.push('</li>');
+            return html.join(' ');
+        }
+
+        function caretdown() {
+            $(this).addClass('caret-down');
+            $(this.children).each(function () {
+                nest(this);
+            });
+        }
+
+        function nest(li) {
+            $(li)
+                .removeClass('nested')
+                .addClass('active');
+        }
+
+        $(document).ready(function () {
+			//http://www.mocky.io/v2/5c3c7ad13100007400a1a401
+            getJson('https://run.mocky.io/v3/eefc8411-5202-4aa0-b71b-039d08906a58');
+        });
+    </script>
+</head>
+<body>
+    <ul id="myUL" />
+	<input type='text' onclick='$(id).value(search(this.value');' />
+	<textarea id='ta' rows=4 cols=70 />
+	
+</body>
+</html>
